@@ -1,6 +1,7 @@
 using System.Reflection;
 using AbstractTaskService.Client;
 using ApiGateway.Logic;
+using Infrastructure.API.Configuration.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,15 +18,9 @@ builder.Services.AddSingleton<IAbstractTaskServiceClient, AbstractTaskServiceCli
 
 var app = builder.Build();
 
-// if (app.Environment.IsDevelopment()) TODO
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// app.UseHttpsRedirection(); TODO
-
-app.UseAuthentication();
-app.UseAuthorization();
+app.BaseConfiguration(
+    useHttps: false,
+    isPrivateHosted: false
+);
 
 app.Run();

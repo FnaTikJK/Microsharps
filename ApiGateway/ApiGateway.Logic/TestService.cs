@@ -17,8 +17,8 @@ public class TestService : ITestService
         this.taskServiceClient = taskServiceClient;
     }
     
-    public Task<Result<string>> Test()
+    public async Task<Result<string>> Test()
     {
-        throw new NotImplementedException();
+        return await taskServiceClient.TestGet();
     }
 }

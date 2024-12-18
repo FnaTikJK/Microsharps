@@ -16,7 +16,7 @@ public class TestController : ControllerBase
     }
 
     [HttpGet("Test")]
-    public async Task<ActionResult> Test()
+    public async Task<ActionResult<string>> Test()
     {
         var response = await testService.Test();
         return response.ActionResult();

@@ -50,4 +50,21 @@ public static class Result
     {
         return new Result<T>(e, HttpStatusCode.NotFound);
     }
+
+    public static Result<T> InternalServerError<T>(string e)
+    {
+        return new Result<T>(e, HttpStatusCode.InternalServerError);
+    }
+
+
+    public static Result<T> ErrorFromHttp<T>(HttpResponseMessage response)
+    {
+        var errorMessage = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        return response.StatusCode switch
+        {
+            HttpStatusCode.BadRequest => BadRequest<T>(errorMessage),
+            HttpStatusCode.NotFound => NotFound<T>(errorMessage),
+            HttpStatusCode.InternalServerError => InternalServerError<T>(errorMessage),
+        };
+    }
 }

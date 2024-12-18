@@ -1,0 +1,6 @@
+@ServiceDiscovery.API_HostAddress = http://localhost:8888
+
+GET {{ServiceDiscovery.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

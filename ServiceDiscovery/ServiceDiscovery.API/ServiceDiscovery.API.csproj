@@ -15,10 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\AbstractTaskService\AbstractTaskService.Client\AbstractTaskService.Client.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Infrastructure.API\Infrastructure.API.csproj" />
-      <ProjectReference Include="..\..\Infrastructure\Infrastructure\Infrastructure.csproj" />
-      <ProjectReference Include="..\ApiGateway.Logic\ApiGateway.Logic.csproj" />
+      <ProjectReference Include="..\ServiceDiscovery.Logic\ServiceDiscovery.Logic.csproj" />
+      <ProjectReference Include="..\ServiceDiscovery.Models\ServiceDiscovery.Models.csproj" />
     </ItemGroup>
 
 </Project>
