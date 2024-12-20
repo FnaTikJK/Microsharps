@@ -1,4 +1,7 @@
 ﻿using AbstractTaskService.Client;
+using AbstractTaskService.Models;
+using AbstractTaskService.Models.Request;
+using ApiGateway.Logic.Requests;
 using Infrastructure;
 
 namespace ApiGateway.Logic;
@@ -6,6 +9,7 @@ namespace ApiGateway.Logic;
 public interface ITestService
 {
     Task<Result<string>> Test();
+    Task<Result<TestPostResponse>> TestPost(TestPostRequest request);
 }
 
 public class TestService : ITestService
@@ -17,8 +21,17 @@ public class TestService : ITestService
         this.taskServiceClient = taskServiceClient;
     }
     
-    public Task<Result<string>> Test()
+    public async Task<Result<string>> Test()
     {
-        throw new NotImplementedException();
+        return await taskServiceClient.TestGet();
+    }
+
+    public async Task<Result<TestPostResponse>> TestPost(TestPostRequest request)
+    {
+        var response = await taskServiceClient.TestPost(TestMapper.Map(request));
+        if (!response.IsSuccess)
+            return Result.ErrorFrom<TestPostResponseModel, TestPostResponse>(response);
+
+        return Result.Ok(TestMapper.Map(response.Value));
     }
 }

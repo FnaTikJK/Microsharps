@@ -1,4 +1,9 @@
 using System.Reflection;
+using AbstractTaskService.Logic;
+using Infrastructure.API.Configuration;
+using Infrastructure.API.Configuration.ServiceDiscovery;
+
+const string applicationName = "abstract-task-service";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,17 +15,13 @@ builder.Services.AddSwaggerGen(opt =>
     opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
+builder.Services.RegisterServiceDiscovery(applicationName);
+builder.Services.AddSingleton<IAbstractTaskService, AbstractTaskService.Logic.AbstractTaskService>();
+
 var app = builder.Build();
 
-// if (app.Environment.IsDevelopment()) TODO
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// app.UseHttpsRedirection(); TODO
-
-app.UseAuthentication();
-app.UseAuthorization();
+app.BaseConfiguration(useHttps:false, true);
+app.RegisterInServiceDiscovery();
 
 app.Run();
+

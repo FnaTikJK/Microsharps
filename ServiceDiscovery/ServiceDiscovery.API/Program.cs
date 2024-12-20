@@ -1,4 +1,6 @@
 using System.Reflection;
+using Infrastructure.API.Configuration;
+using ServiceDiscovery.Logic.ServicesModule;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,19 +12,12 @@ builder.Services.AddSwaggerGen(opt =>
     opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
+builder.Services.AddSingleton<IRoutingService, RoutingService>(_ => new RoutingService(TimeSpan.FromSeconds(10))); // TODO: Config
+
 var app = builder.Build();
 
-app.MapControllers();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
+app.BaseConfiguration(
+    useHttps: false,
+    isPrivateHosted: true);
 
 app.Run();

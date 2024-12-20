@@ -11,7 +11,14 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Infrastructure\Infrastructure.API\Infrastructure.API.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\AbstractTaskService.Logic\AbstractTaskService.Logic.csproj" />
+      <ProjectReference Include="..\AbstractTaskService.Models\AbstractTaskService.Models.csproj" />
     </ItemGroup>
 
 </Project>

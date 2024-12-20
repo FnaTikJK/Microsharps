@@ -50,4 +50,32 @@ public static class Result
     {
         return new Result<T>(e, HttpStatusCode.NotFound);
     }
+
+    public static Result<T> InternalServerError<T>(string e)
+    {
+        return new Result<T>(e, HttpStatusCode.InternalServerError);
+    }
+
+
+    public static Result<T2> ErrorFrom<T, T2>(Result<T> source)
+    {
+        if (source.IsSuccess)
+            throw new ArgumentException("source Result should be unsuccessful");
+        
+        return new Result<T2>(source.Error, source.StatusCode);
+    }
+
+    public static Result<T> ErrorFromHttp<T>(Result<HttpResponseMessage> source)
+        => ErrorFrom<HttpResponseMessage, T>(source);
+    
+    public static Result<T> ErrorFromHttp<T>(HttpResponseMessage response)
+    {
+        var errorMessage = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        return response.StatusCode switch
+        {
+            HttpStatusCode.BadRequest => BadRequest<T>(errorMessage),
+            HttpStatusCode.NotFound => NotFound<T>(errorMessage),
+            HttpStatusCode.InternalServerError => InternalServerError<T>(errorMessage),
+        };
+    }
 }
