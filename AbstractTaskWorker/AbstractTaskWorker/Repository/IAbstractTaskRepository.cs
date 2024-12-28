@@ -4,5 +4,5 @@ namespace AbstractTaskWorker;
 
 public interface IAbstractTaskRepository
 {   
-    Task UpdateAsync(AbstractTaskW task);
+    Task AddAsync(AbstractTask task);
 }

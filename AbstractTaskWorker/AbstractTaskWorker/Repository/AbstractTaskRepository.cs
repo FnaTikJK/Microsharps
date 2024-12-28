@@ -10,10 +10,9 @@ public class AbstractTaskRepository : IAbstractTaskRepository
     {
         this.context = context;
     }
-
-    public async Task UpdateAsync(AbstractTaskW task)
+    public async Task AddAsync(AbstractTask task)
     {
-        context.AbstractTasks.Update(task);
+        await context.AbstractTasks.AddAsync(task);
         await context.SaveChangesAsync();
     }
     

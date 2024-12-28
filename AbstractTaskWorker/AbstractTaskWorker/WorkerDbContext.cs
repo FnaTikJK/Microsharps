@@ -5,7 +5,7 @@ namespace AbstractTaskWorker;
 
 public sealed class WorkerDbContext : DbContext
 {
-    public DbSet<AbstractTaskW?> AbstractTasks { get; set; }
+    public DbSet<AbstractTask?> AbstractTasks { get; set; }
 
     public WorkerDbContext(DbContextOptions<WorkerDbContext> options)
         : base(options)

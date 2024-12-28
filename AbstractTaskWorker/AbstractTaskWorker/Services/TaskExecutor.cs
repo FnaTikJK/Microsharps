@@ -18,11 +18,11 @@ public class TaskExecutor
         this.cache = cache;
     }
     
-    public async Task ExecuteTask(AbstractTaskW taskW)
+    public async Task ExecuteTask(AbstractTask task)
     {
         var source = new CancellationTokenSource();
         var token = source.Token;
-        source.CancelAfter(taskW.TTLInMillisecond);
+        source.CancelAfter(task.TTLInMillisecond);
         stopwatch.Restart();
         try
         {   
@@ -33,13 +33,13 @@ public class TaskExecutor
                 Console.WriteLine($"delay {delay}");
                 await Task.Delay(progressUpdateStep, token);
                 var progress = Math.Round((double)stopwatch.ElapsedMilliseconds / delay * 100);
-                taskW.Status = $"In progress: {progress} % done";
-                await cache.SetStringAsync(taskW.Id.ToString(), taskW.Status, token);
+                task.Status = $"In progress: {progress} % done";
+                await cache.SetStringAsync(task.Id.ToString(), task.Status, token);
             }
         }
         catch (OperationCanceledException)
         {
-            taskW.Status = "Canceled: Timeout";
+            task.Status = "Canceled: Timeout";
         }
     }
 }

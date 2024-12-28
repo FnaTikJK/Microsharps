@@ -1,6 +1,6 @@
 namespace AbstractTaskWorker.Model;
 
-public class AbstractTaskW
+public class AbstractTask
 {   
     public Guid Id { get; set; }
     public string Description { get; set; }

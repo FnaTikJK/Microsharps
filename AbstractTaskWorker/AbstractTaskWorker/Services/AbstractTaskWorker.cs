@@ -55,7 +55,7 @@ public class AbstractTaskWorker : BackgroundService
                 await executor.ExecuteTask(task);
                 using var scope = scopeFactory.CreateScope();
                 var repository = scope.ServiceProvider.GetRequiredService<IAbstractTaskRepository>();
-                await repository.UpdateAsync(task);
+                await repository.AddAsync(task);
                 await channel.BasicAckAsync(ea.DeliveryTag, false);
             }
             catch (Exception ex)
@@ -74,10 +74,10 @@ public class AbstractTaskWorker : BackgroundService
         return Task.CompletedTask;
     }
     
-    private AbstractTaskW DeserializeToModelAsync(byte[] body)
+    private AbstractTask DeserializeToModelAsync(byte[] body)
     {
         using var memoryStream = new MemoryStream(body);
-        var task = JsonSerializer.Deserialize<AbstractTaskW>(memoryStream);//TODO: проверка на валидность
+        var task = JsonSerializer.Deserialize<AbstractTask>(memoryStream);//TODO: проверка на валидность
         return task;
     }
 }
