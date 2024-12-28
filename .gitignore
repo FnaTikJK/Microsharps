@@ -483,8 +483,3 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 AbstractTaskService/AbstractTaskService.API/appsettings.json
-
-AbstractTaskService/
-ApiGateway/
-Infrastructure/
-ServiceDiscovery/
