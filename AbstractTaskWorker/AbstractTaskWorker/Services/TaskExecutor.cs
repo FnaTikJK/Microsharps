@@ -23,23 +23,30 @@ public class TaskExecutor
         var source = new CancellationTokenSource();
         var token = source.Token;
         source.CancelAfter(task.TTLInMillisecond);
-        stopwatch.Restart();
         try
-        {   
+        {
+            Console.WriteLine("Запуск обработки");
             var delay = rnd.Next(500, 1500);
             var progressUpdateStep = delay / 20;
+            stopwatch.Restart();
             while (stopwatch.ElapsedMilliseconds <= delay)
             {
                 Console.WriteLine($"delay {delay}");
                 await Task.Delay(progressUpdateStep, token);
-                var progress = Math.Round((double)stopwatch.ElapsedMilliseconds / delay * 100);
+                var progress = Math.Min(Math.Round((double)stopwatch.ElapsedMilliseconds / delay * 100),100);
                 task.Status = $"In progress: {progress} % done";
-                await cache.SetStringAsync(task.Id.ToString(), task.Status, token);
+                Console.WriteLine($"{task.Status}");
+                await cache.SetStringAsync(task.Id.ToString(), task.Status);
+                Console.WriteLine("Отправил в кеш");
             }
         }
         catch (OperationCanceledException)
         {
             task.Status = "Canceled: Timeout";
+        }
+        finally
+        {
+            stopwatch.Stop();
         }
     }
 }
