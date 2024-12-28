@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 AbstractTaskService/AbstractTaskService.API/appsettings.json
 
 AbstractTaskService/
+ApiGateway/
+Infrastructure/
+ServiceDiscovery/
