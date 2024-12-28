@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AbstractTaskWorker.Model;
+using Microsoft.Extensions.Caching.Distributed;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -11,11 +12,13 @@ public class AbstractTaskWorker : BackgroundService
     private readonly IServiceScopeFactory scopeFactory;
     private IConnection connection;
     private IChannel? channel;
-
-    public AbstractTaskWorker(IServiceScopeFactory scopeFactory)
+    private IDistributedCache cache;
+    
+    public AbstractTaskWorker(IDistributedCache cache, IServiceScopeFactory scopeFactory )
     {
+        this.cache = cache;
         this.scopeFactory = scopeFactory;
-        executor = new TaskExecutor();
+        executor = new TaskExecutor(cache);
     }
 
     private async Task InitAsync()
@@ -32,10 +35,10 @@ public class AbstractTaskWorker : BackgroundService
     {
         if (channel is null)
             await InitAsync();
-        
+        var consumer = new AsyncEventingBasicConsumer(channel);
         while (!stoppingToken.IsCancellationRequested)
         {
-            var consumer = new AsyncEventingBasicConsumer(channel);
+
             await ReceiveMessage(consumer);
             await channel.BasicConsumeAsync(queue: "hello", autoAck: false, consumer: consumer, cancellationToken: stoppingToken);
         }
@@ -49,9 +52,7 @@ public class AbstractTaskWorker : BackgroundService
             {   
                 var body = ea.Body.ToArray();
                 var task = DeserializeToModelAsync(body);
-                var taskStatus = await executor.ExecuteTask(task);
-                Console.WriteLine($"Id {task.Id} res: {taskStatus}");
-                task.Status = taskStatus;
+                await executor.ExecuteTask(task);
                 using var scope = scopeFactory.CreateScope();
                 var repository = scope.ServiceProvider.GetRequiredService<IAbstractTaskRepository>();
                 await repository.UpdateAsync(task);
@@ -62,7 +63,6 @@ public class AbstractTaskWorker : BackgroundService
                 Console.WriteLine($"Error processing message: {ex.Message}");
                 try
                 {
-                    // Отправляем отрицательное подтверждение, чтобы сообщение можно было обработать снова
                     await channel.BasicNackAsync(ea.DeliveryTag, false, true);
                 }
                 catch (Exception nackEx)
