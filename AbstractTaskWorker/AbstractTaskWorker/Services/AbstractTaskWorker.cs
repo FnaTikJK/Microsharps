@@ -32,8 +32,6 @@ public class AbstractTaskWorker : BackgroundService
             autoDelete: false,
             arguments: null);
     }
-
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {   
         await InitAsync();

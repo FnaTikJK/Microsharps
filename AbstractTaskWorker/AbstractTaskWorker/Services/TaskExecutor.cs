@@ -26,7 +26,7 @@ public class TaskExecutor
         try
         {
             Console.WriteLine("Запуск обработки");
-            var delay = rnd.Next(500, 1500);
+            var delay = rnd.Next(6000, 18000);
             var progressUpdateStep = delay / 20;
             stopwatch.Restart();
             while (stopwatch.ElapsedMilliseconds <= delay)
@@ -36,7 +36,7 @@ public class TaskExecutor
                 var progress = Math.Min(Math.Round((double)stopwatch.ElapsedMilliseconds / delay * 100),100);
                 task.Status = $"In progress: {progress} % done";
                 Console.WriteLine($"{task.Status}");
-                await cache.SetStringAsync(task.Id.ToString(), task.Status);
+                await cache.SetStringAsync(task.Id.ToString(), $"{task.Description},{task.TTLInMillisecond},{task.Status}");
                 Console.WriteLine("Отправил в кеш");
             }
         }
@@ -46,6 +46,7 @@ public class TaskExecutor
         }
         finally
         {
+            await cache.RemoveAsync(task.Id.ToString());
             stopwatch.Stop();
         }
     }
