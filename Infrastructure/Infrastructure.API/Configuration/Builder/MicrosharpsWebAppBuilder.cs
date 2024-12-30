@@ -1,6 +1,7 @@
 using System.Reflection;
 using Infrastructure.API.Configuration.Logging;
 using Infrastructure.API.Configuration.ServiceDiscovery;
+using Infrastructure.API.RightsChecker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -121,5 +122,12 @@ public class MicrosharpsWebAppBuilder
         appConfig.Apply(app);
         
         app.Run();
+    }
+    
+    public MicrosharpsWebAppBuilder UseRightsChecker()
+    {
+        builder.Services.AddSingleton<IRightsChecker, RightsChecker.RightsChecker>();
+        appConfig.Add(app => app.UseRightsChecker());  // Применяем middleware для проверки прав
+        return this;
     }
 }
