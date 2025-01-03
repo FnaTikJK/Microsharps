@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Client", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractTaskService.Models", "AbstractTaskService.Models\AbstractTaskService.Models.csproj", "{E4C14E14-2C05-4F2C-B6DD-2E1651E072CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDiscovery.Models", "..\ServiceDiscovery\ServiceDiscovery.Models\ServiceDiscovery.Models.csproj", "{8B082802-50D1-48C9-896E-C420919072D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractTaskService.DAL", "AbstractTaskService.DAL\AbstractTaskService.DAL.csproj", "{7CC8EA4D-5055-4A75-8FD4-4CB78605610D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +52,13 @@ Global
 		{E4C14E14-2C05-4F2C-B6DD-2E1651E072CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4C14E14-2C05-4F2C-B6DD-2E1651E072CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4C14E14-2C05-4F2C-B6DD-2E1651E072CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B082802-50D1-48C9-896E-C420919072D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B082802-50D1-48C9-896E-C420919072D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B082802-50D1-48C9-896E-C420919072D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B082802-50D1-48C9-896E-C420919072D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CC8EA4D-5055-4A75-8FD4-4CB78605610D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CC8EA4D-5055-4A75-8FD4-4CB78605610D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CC8EA4D-5055-4A75-8FD4-4CB78605610D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CC8EA4D-5055-4A75-8FD4-4CB78605610D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
