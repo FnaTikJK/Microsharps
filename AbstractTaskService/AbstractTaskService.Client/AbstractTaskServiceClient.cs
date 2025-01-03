@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using AbstractTaskService.Models.Request;
+using AbstractTaskService.Models.Response;
 using Infrastructure;
 using Infrastructure.Client;
 
@@ -7,8 +8,10 @@ namespace AbstractTaskService.Client;
 
 public interface IAbstractTaskServiceClient
 {
-    Task<Result<string>> TestGet();
-    Task<Result<TestPostResponseModel>> TestPost(TestPostRequestModel request);
+    Task<Result<AddTaskResponseModel>> AddTask(AddTaskRequestModel request);
+
+    Task<Result<GetTaskResponseModel>> GetTask(Guid id);
+    Task<Result<RetryTaskResponseModel>> RetryTask(RetryTaskRequestModel request);
 }
 
 public class AbstractTaskServiceClient : IAbstractTaskServiceClient
@@ -20,23 +23,30 @@ public class AbstractTaskServiceClient : IAbstractTaskServiceClient
     {
         sdClient = new ServiceDiscoveryClient(serviceName, null); // TODO: config
     }
-    
-    public async Task<Result<string>> TestGet()
+    public async Task<Result<AddTaskResponseModel>> AddTask(AddTaskRequestModel request)
     {
-        var response = await sdClient.GetAsync("api/Test/Test");
+        var response = await sdClient.PostAsync("api/Tasks/AddTask", JsonContent.Create(request));
         if (!response.IsSuccess)
-            return Result.ErrorFromHttp<string>(response);
+            return Result.ErrorFromHttp<AddTaskResponseModel>(response);
 
-        return Result.Ok(await response.Value.Content.ReadAsStringAsync());
+        return Result.Ok(await response.Value.Content.FromJsonOrThrow<AddTaskResponseModel>());
     }
 
-    public async Task<Result<TestPostResponseModel>> TestPost(TestPostRequestModel request)
+    public async Task<Result<GetTaskResponseModel>> GetTask(Guid id)
     {
-        var response = await sdClient.PostAsync("api/Test/TestPost", JsonContent.Create(request));
+        var response = await sdClient.GetAsync($"api/Tasks/{id}");
         if (!response.IsSuccess)
-            return Result.ErrorFromHttp<TestPostResponseModel>(response);
+            return Result.ErrorFromHttp<GetTaskResponseModel>(response);
 
-        var responseModel = await response.Value.Content.FromJsonOrThrow<TestPostResponseModel>();
-        return Result.Ok(responseModel);
+        return Result.Ok(await response.Value.Content.FromJsonOrThrow<GetTaskResponseModel>());
+    }
+
+    public async Task<Result<RetryTaskResponseModel>> RetryTask(RetryTaskRequestModel request)
+    {
+        var response = await sdClient.PostAsync("api/Tasks/RetryTask", JsonContent.Create(request));
+        if (!response.IsSuccess)
+            return Result.ErrorFromHttp<RetryTaskResponseModel>(response);
+
+        return Result.Ok(await response.Value.Content.FromJsonOrThrow<RetryTaskResponseModel>());
     }
 }

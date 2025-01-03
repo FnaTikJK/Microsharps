@@ -22,6 +22,8 @@ services:
       xpack.security.enabled: false
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - my-network
       
   kibana:
     container_name: kibana
@@ -54,10 +56,75 @@ services:
       - "HOST=http://abstract-task-service:8080"
       - "SD_HOST=http://service-discovery:8080"
       - "SWAGGER_REQUESTS_PREFIX=tasks" # from nginx prefixes
+      - "QUEUE_NAME=hello"
+      - "DB_HOST=Server=postgres-tasks;Database=AbstractTaskService;Port=5432;User Id=postgres;Password=123"
+      - "REDIS_CONF=redis"
+      - "REDIS_NAME=redis"
+      - "RABBIT_HOST=rabbitmq"
+      - "RABBITMQ_PORT=5672"
+      - "REDIS_PORT=6379"
     ports:
       - 7778:8080
     depends_on:
+      - postgres-tasks
       - service-discovery
+    networks:
+      - my-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      - "QUEUE_NAME=hello"
+      - "RABBITMQ_DEFAULT_USER:guest"
+      - "RABBITMQ_DEFAULT_PASS:guest"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - my-network
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./redisdata:/data
+
+  postgres-tasks:
+    image: postgres
+    environment:
+      POSTGRES_DB: "AbstractTaskService"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123 
+    ports:
+      - "5433:5432"
+    volumes:
+      - tasks_postgres_data:/var/lib/postgresql/data/
+    networks:
+      - my-network
+  
+  worker:
+    image: cr.yandex/crp92lg5cv6m42bunkmg/worker:last
+    container_name: worker
+    environment:
+      - "ASPNETCORE_ENVIRONMENT=Release"
+      - "HOST=http://abstract-task-worker:8080"
+      - "QUEUE_NAME=hello"
+      - "DB_HOST=Server=postgres-tasks;Database=AbstractTaskService;Port=5432;User Id=postgres;Password=123"
+      - "REDIS_CONF=redis"
+      - "REDIS_NAME=redis"
+      - "RABBIT_HOST=rabbitmq"
+      - "RABBITMQ_PORT=5672"
+      - "REDIS_PORT=6379"
+    ports:
+      - 5555:8080
+    restart: always
+    depends_on:
+      - postgres-tasks
+      - rabbitmq
+      - redis
     networks:
       - my-network
 
@@ -106,11 +173,13 @@ services:
       - abstract-task-service
       - users
       - api-gateway
+      - worker
     networks:
       - my-network
 
 
 volumes:
+  tasks_postgres_data:
   stackup_postgres_data:
   elasticsearch_data:
 

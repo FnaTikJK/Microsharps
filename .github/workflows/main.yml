@@ -11,6 +11,7 @@ env:
   ABSTRACT_TASK_SERVICE_IMAGE: cr.yandex/crp92lg5cv6m42bunkmg/abstract-task-service:last
   USERS_IMAGE: cr.yandex/crp92lg5cv6m42bunkmg/users:last
   API_GATEWAY_IMAGE: cr.yandex/crp92lg5cv6m42bunkmg/api-gateway:last
+  ABSTRACT_TASK_WORKER_IMAGE_TAG: cr.yandex/crp92lg5cv6m42bunkmg/worker
 
 jobs:
   build-service-dicovery:
@@ -50,6 +51,25 @@ jobs:
       run: |
         docker build -f AbstractTaskService/Dockerfile -t $ABSTRACT_TASK_SERVICE_IMAGE_TAG .
         docker push $ABSTRACT_TASK_SERVICE_IMAGE_TAG
+  
+  build-abstract-task-worker:
+  runs-on: ubuntu-latest
+
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v3
+
+  - name: Yandex Cloud Login
+    uses: yc-actions/yc-cr-login@v1
+    with:
+      yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+  - name: Build and push back
+    env:
+      ABSTRACT_TASK_WORKER_IMAGE_TAG: ${{ env.ABSTRACT_TASK_SERVICE_IMAGE }}
+    run: |
+      docker build -f AbstractTaskWorker/Dockerfile -t $ABSTRACT_TASK_WORKER_IMAGE_TAG .
+      docker push $ABSTRACT_TASK_WORKER_IMAGE_TAG
 
   build-users:
     runs-on: ubuntu-latest

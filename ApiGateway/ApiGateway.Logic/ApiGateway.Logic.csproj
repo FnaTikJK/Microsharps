@@ -12,6 +12,7 @@
       <ProjectReference Include="..\..\Infrastructure\Infrastructure\Infrastructure.csproj" />
       <ProjectReference Include="..\..\Users\Users.Client\Users.Client.csproj" />
       <ProjectReference Include="..\..\Users\Users.Models\Users.Models.csproj" />
+      <ProjectReference Include="..\ApiGateway.Models\ApiGateway.Models.csproj" />
     </ItemGroup>
 
 </Project>

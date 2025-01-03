@@ -1,5 +1,6 @@
 using AbstractTaskService.Client;
 using ApiGateway.Logic;
+using ApiGateway.Logic.Tasks;
 using ApiGateway.Logic.Users;
 using Infrastructure.API.Configuration.Authentication;
 using Infrastructure.API.Configuration.Builder;
@@ -19,8 +20,8 @@ builder.BuildAndRun();
 
 void ConfigureDi(IServiceCollection services)
 {
-    services.AddSingleton<ITestService, TestService>();
     services.AddSingleton<IAbstractTaskServiceClient, AbstractTaskServiceClient>(); // TODO:  add DI to Logic and move into it  
     services.AddSingleton<IUsersService, UsersService>();
     services.AddSingleton<IUsersClient, UsersClient>();
+    services.AddSingleton<ITaskService, TasksService>();
 }
